@@ -78,6 +78,7 @@ class Ui_MainWindow(object):
         self.treeElement.setHeaderItem(__qtreewidgetitem)
         self.treeElement.setObjectName(u"treeElement")
         self.treeElement.setFrameShape(QFrame.NoFrame)
+        self.treeElement.header().setVisible(False)
 
         self.horizontalLayout.addWidget(self.treeElement)
 

@@ -110,6 +110,7 @@ if __name__ == '__main__':
     trans=QtCore.QTranslator()
     isLoaded=trans.load('default','i18n')
     if isLoaded:
+        print('language_country: default.qm')
         app.installTranslator(trans)
     else:
         local=QtCore.QLocale()
