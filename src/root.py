@@ -21,7 +21,9 @@ def onExpandItem(item):
     element=item.data(1,Qt.DisplayRole)
     children=element.children
     for child in children:
-        childNode=QTreeWidgetItem(item,[td.getText(child)])
+        text=td.getText(child)
+        childNode=QTreeWidgetItem(item,[text])
+        childNode.setToolTip(0,text)
         if len(child.children)==0:
             childNode.setChildIndicatorPolicy(QTreeWidgetItem.DontShowIndicator)
         else:
