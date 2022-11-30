@@ -12,6 +12,8 @@ from tdWindows import tdWindows as td
 
 import keyboard
 
+import root
+
 
 class Highlighter(QWidget):
     def __init__(self,callBackFinished,callBackCanceled):
@@ -82,6 +84,8 @@ class MainWindow(QMainWindow):
         self.setupActions()
         
         self.highlighter=Highlighter(self.highlightFinished,self.highlightCanceled)
+        
+        root.load(self.ui)
         
     def setupActions(self):
         self.ui.actionIndicate_Element.triggered.connect(self.action__Indicate_Element)
