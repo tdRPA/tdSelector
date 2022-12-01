@@ -8,7 +8,7 @@ def load(ui):
     element=td.getRootElement()
     tree=ui.treeElement
     
-    rootNode=QTreeWidgetItem(tree,[td.getText(element)])
+    rootNode=QTreeWidgetItem(tree,[element.text])
     rootNode.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
     rootNode.setData(1,Qt.DisplayRole,element)
     
@@ -21,7 +21,7 @@ def onExpandItem(item):
     element=item.data(1,Qt.DisplayRole)
     children=element.children
     for child in children:
-        text=td.getText(child)
+        text=child.text
         childNode=QTreeWidgetItem(item,[text])
         childNode.setToolTip(0,text)
         if len(child.children)==0:
