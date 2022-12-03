@@ -90,9 +90,21 @@ class Ui_MainWindow(object):
         self.tab_3.setObjectName(u"tab_3")
         self.horizontalLayout_2 = QHBoxLayout(self.tab_3)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.tableProperty = QTableWidget(self.tab_3)
+        if (self.tableProperty.columnCount() < 2):
+            self.tableProperty.setColumnCount(2)
         self.tableProperty.setObjectName(u"tableProperty")
+        self.tableProperty.setFocusPolicy(Qt.NoFocus)
         self.tableProperty.setFrameShape(QFrame.NoFrame)
+        self.tableProperty.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tableProperty.setAlternatingRowColors(True)
+        self.tableProperty.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.tableProperty.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableProperty.setColumnCount(2)
+        self.tableProperty.horizontalHeader().setVisible(False)
+        self.tableProperty.horizontalHeader().setStretchLastSection(True)
+        self.tableProperty.verticalHeader().setVisible(False)
 
         self.horizontalLayout_2.addWidget(self.tableProperty)
 

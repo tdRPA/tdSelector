@@ -32,7 +32,7 @@ class tdElement():
         
         properties=OrderedDict()
         process=ps.Process(self._td.getProcessId(self))
-        properties['PID']=tdProperty(process.pid)
+        properties['PID']=tdProperty(str(process.pid))
         properties['App']=tdProperty(process.name())
         properties['AppPath']=tdProperty(process.exe())
         
