@@ -1,5 +1,6 @@
 from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QTreeWidgetItem,QTableWidgetItem
+from PySide2.QtWidgets import QTreeWidgetItem,QTableWidgetItem,QMenu,QAction
+from PySide2.QtGui import QCursor
 
 
 ui=None
@@ -14,10 +15,33 @@ def onRootLoad(rootElement):
     
     tree.itemExpanded.connect(onExpandItem)
     tree.currentItemChanged.connect(onCurrentItemChanged)
+    tree.contextMenuEvent=onContextMenuEvent
         
     tree.setCurrentItem(rootNode)
     tree.expandItem(rootNode)
     
+    
+def onContextMenuEvent(event):
+    tree=ui.treeElement    
+    
+    actionTarget = QAction('Set as Target Element',tree)
+    actionAnchor = QAction('Set as Anchor Element',tree)
+    actionTarget.triggered.connect(action__Target)
+    actionAnchor.triggered.connect(action__Anchor)
+    
+    menu = QMenu(tree)
+    menu.addAction(actionTarget)
+    menu.addAction(actionAnchor)
+    menu.popup(QCursor.pos())
+    
+def action__Target(checked):
+    item=ui.treeElement.currentItem()
+    element=item.data(1,Qt.DisplayRole)
+    
+def action__Anchor(checked):
+    item=ui.treeElement.currentItem()
+    element=item.data(1,Qt.DisplayRole)
+
     
 def onExpandItem(item):
     element=item.data(1,Qt.DisplayRole)
