@@ -20,11 +20,6 @@ class tdWindows(td):
         return tdElement(root,tdWindows)
         
     @staticmethod
-    def getProcessId(element: tdElement) -> int:
-        autoElement=element._element
-        return autoElement.ProcessId
-        
-    @staticmethod
     def getText(element: tdElement) -> str:
         autoElement=element._element
         if autoElement.GetParentControl()==None:
@@ -35,7 +30,7 @@ class tdWindows(td):
         else:
             text=autoElement.ControlTypeName.rsplit('Control',1)[0]+' '+autoElement.Name
         text=re.sub(r'\s+',' ',text)
-        return text[:50]
+        return text[:100]
         
     @staticmethod
     def getChildren(element: tdElement) -> List[tdElement]:
@@ -46,3 +41,25 @@ class tdWindows(td):
             r.append(tdElement(item,element._td))
         return r
         
+    @staticmethod
+    def fillProperties(element: tdElement):
+        autoElement=element._element
+        properties=element.properties
+        
+        properties['ControlType']=tdProperty(autoElement.ControlType,autoElement.ControlTypeName.rsplit('Control',1)[0])
+        properties['AutomationId']=tdProperty(autoElement.AutomationId)
+        properties['ClassName']=tdProperty(autoElement.ClassName)
+        properties['Text']=tdProperty(autoElement.Name)
+        
+        acc=autoElement.GetLegacyIAccessiblePattern()        
+        properties['accRole']=tdProperty(acc.Role)
+        properties['accState']=tdProperty(acc.State)        
+        
+        process=ps.Process(autoElement.ProcessId)
+        properties['PID']=tdProperty(str(process.pid))
+        properties['App']=tdProperty(process.name())
+        properties['AppPath']=tdProperty(process.exe())
+
+        properties['Framework']=tdProperty(autoElement.FrameworkId)
+        properties['HWND']=tdProperty(hex(autoElement.NativeWindowHandle))
+        properties['Bounding']=tdProperty(str(autoElement.BoundingRectangle))

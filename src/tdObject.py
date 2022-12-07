@@ -1,7 +1,5 @@
 from collections import OrderedDict
 
-import psutil as ps
-
 
 class Rectangle():
     def __init__(self,left,top,right,bottom):
@@ -20,8 +18,12 @@ class Rectangle():
         
         
 class tdProperty():
-    def __init__(self,value,isFilter=False):
+    def __init__(self,value,text=None,isFilter=False):
         self.value=value
+        if text==None:
+            self.text=str(value)
+        else:
+            self.text='%s(%s)' % (str(value),str(text))
         self.isFilter=isFilter
         
         
@@ -30,13 +32,8 @@ class tdElement():
         self._element=element
         self._td=td
         
-        properties=OrderedDict()
-        process=ps.Process(self._td.getProcessId(self))
-        properties['PID']=tdProperty(str(process.pid))
-        properties['App']=tdProperty(process.name())
-        properties['AppPath']=tdProperty(process.exe())
-        
-        self.properties=properties
+        self.properties=OrderedDict()
+        td.fillProperties(self)
         
     @property
     def text(self):
