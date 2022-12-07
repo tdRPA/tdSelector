@@ -20,17 +20,20 @@ class tdWindows(td):
         return tdElement(root,tdWindows)
         
     @staticmethod
-    def getText(element: tdElement) -> str:
+    def getText(element: tdElement,withPrefix=True) -> str:
         autoElement=element._element
-        if autoElement.GetParentControl()==None:
-            text=autoElement.Name
-        elif autoElement.GetParentControl().GetParentControl()==None:
-            process=ps.Process(autoElement.ProcessId)
-            text=process.name()+' '+autoElement.Name
-        else:
-            text=autoElement.ControlTypeName.rsplit('Control',1)[0]+' '+autoElement.Name
-        text=re.sub(r'\s+',' ',text)
-        return text[:100]
+        text=re.sub(r'\s+',' ',autoElement.Name)[:100]
+        if withPrefix:
+            if autoElement.GetParentControl()==None:
+                prefix=''
+            elif autoElement.GetParentControl().GetParentControl()==None:
+                process=ps.Process(autoElement.ProcessId)
+                prefix=process.name()
+            else:
+                prefix=autoElement.ControlTypeName.rsplit('Control',1)[0]
+            text=prefix+' '+text
+        
+        return text.strip()
         
     @staticmethod
     def getChildren(element: tdElement) -> List[tdElement]:
@@ -49,7 +52,7 @@ class tdWindows(td):
         properties['ControlType']=tdProperty(autoElement.ControlType,autoElement.ControlTypeName.rsplit('Control',1)[0])
         properties['AutomationId']=tdProperty(autoElement.AutomationId)
         properties['ClassName']=tdProperty(autoElement.ClassName)
-        properties['Text']=tdProperty(autoElement.Name)
+        properties['Text']=tdProperty(element.toolTip)
         
         acc=autoElement.GetLegacyIAccessiblePattern()        
         properties['accRole']=tdProperty(acc.Role)

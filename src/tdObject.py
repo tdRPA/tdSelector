@@ -39,6 +39,10 @@ class tdElement():
     def text(self):
         return self._td.getText(self)
         
+    @property
+    def toolTip(self):
+        return self._td.getText(self,withPrefix=False)
+        
     @property    
     def children(self):
         return self._td.getChildren(self)

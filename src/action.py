@@ -1,8 +1,6 @@
 from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QTreeWidgetItem,QTableWidgetItem
 
-import re
-
 
 ui=None
 
@@ -47,7 +45,6 @@ def onCurrentItemChanged(item, previous):
     i=0
     for key in element.properties:
         text=properties[key].text
-        text=re.sub(r'\s+',' ',text)[:100]
         colProperty=QTableWidgetItem(key)
         table.setItem(i, 0, colProperty)
         colText=QTableWidgetItem(text)
