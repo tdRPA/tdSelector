@@ -20,7 +20,7 @@ class tdWindows(td):
         return tdElement(root,tdWindows)
         
     @staticmethod
-    def getText(element: tdElement,withPrefix=True) -> str:
+    def getText(element: tdElement,withPrefix=False) -> str:
         autoElement=element._element
         text=re.sub(r'\s+',' ',autoElement.Name)[:100]
         if withPrefix:
@@ -36,6 +36,15 @@ class tdWindows(td):
         return text.strip()
         
     @staticmethod
+    def getParent(element: tdElement) -> tdElement:
+        autoElement=element._element
+        autoParent=autoElement.GetParentControl()
+        if autoParent!=None:
+            return tdElement(autoParent,element._td)
+        else:
+            return None
+        
+    @staticmethod
     def getChildren(element: tdElement) -> List[tdElement]:
         autoElement=element._element
         r=[]
@@ -49,14 +58,14 @@ class tdWindows(td):
         autoElement=element._element
         properties=element.properties
         
-        properties['ControlType']=tdProperty(autoElement.ControlType,autoElement.ControlTypeName.rsplit('Control',1)[0])
-        properties['AutomationId']=tdProperty(autoElement.AutomationId)
-        properties['ClassName']=tdProperty(autoElement.ClassName)
-        properties['Text']=tdProperty(element.toolTip)
+        properties['ControlType']=tdProperty(autoElement.ControlType,autoElement.ControlTypeName.rsplit('Control',1)[0], isFilter=True)
+        properties['AutomationId']=tdProperty(autoElement.AutomationId, isFilter=True)
+        properties['ClassName']=tdProperty(autoElement.ClassName, isFilter=True)
+        properties['Text']=tdProperty(element.text, isFilter=True)
         
         acc=autoElement.GetLegacyIAccessiblePattern()        
-        properties['accRole']=tdProperty(acc.Role)
-        properties['accState']=tdProperty(acc.State)        
+        properties['accRole']=tdProperty(acc.Role, isFilter=True)
+        properties['accState']=tdProperty(acc.State, isFilter=True)        
         
         process=ps.Process(autoElement.ProcessId)
         properties['PID']=tdProperty(str(process.pid))

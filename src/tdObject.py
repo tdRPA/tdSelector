@@ -18,13 +18,14 @@ class Rectangle():
         
         
 class tdProperty():
-    def __init__(self,value,text=None,isFilter=False):
+    def __init__(self,value,text=None,isFilter=False,isSelected=False):
         self.value=value
         if text==None:
             self.text=str(value)
         else:
             self.text='%s(%s)' % (str(value),str(text))
         self.isFilter=isFilter
+        self.isSelected=isSelected
         
         
 class tdElement():
@@ -36,13 +37,31 @@ class tdElement():
         td.fillProperties(self)
         
     @property
+    def display(self):
+        return self._td.getText(self,withPrefix=True)
+        
+    @property
     def text(self):
         return self._td.getText(self)
         
     @property
-    def toolTip(self):
-        return self._td.getText(self,withPrefix=False)
+    def parent(self):
+        return self._td.getParent(self)
         
     @property    
     def children(self):
         return self._td.getChildren(self)
+        
+    @property
+    def filterText(self):
+        text='{ '
+        tag=False
+        for key in self.properties:
+            property=self.properties[key]
+            if property.isFilter and property.isSelected:
+                text+='"%s" : "%s" , ' %(key,str(property.value))
+                tag=True
+        if tag:
+            text=text[:-3]
+        text+=' }'
+        return text

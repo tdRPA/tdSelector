@@ -1,5 +1,5 @@
 from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QTreeWidgetItem,QTableWidgetItem,QMenu,QAction
+from PySide2.QtWidgets import QTreeWidgetItem,QTableWidgetItem,QMenu,QAction,QListWidgetItem
 from PySide2.QtGui import QCursor
 
 
@@ -9,7 +9,7 @@ def onRootLoad(rootElement):
     tree=ui.treeElement
     tree.clear()
     
-    rootNode=QTreeWidgetItem(tree,[rootElement.text])
+    rootNode=QTreeWidgetItem(tree,[rootElement.display])
     rootNode.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
     rootNode.setData(1,Qt.DisplayRole,rootElement)
     
@@ -38,6 +38,18 @@ def action__Target(checked):
     item=ui.treeElement.currentItem()
     element=item.data(1,Qt.DisplayRole)
     
+    selector=ui.listSelector
+    selector.clear()
+    while element.parent!=None:
+        listItem=QListWidgetItem(element.filterText)
+        listItem.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled|Qt.ItemIsUserCheckable)
+        listItem.setCheckState(Qt.Checked)
+        selector.insertItem(0,listItem)
+        element=element.parent
+    if selector.count()>0:
+        selector.item(0).setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled)
+        selector.item(selector.count()-1).setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled)
+    
 def action__Anchor(checked):
     item=ui.treeElement.currentItem()
     element=item.data(1,Qt.DisplayRole)
@@ -47,7 +59,7 @@ def onExpandItem(item):
     element=item.data(1,Qt.DisplayRole)
     children=element.children
     for child in children:
-        text=child.text
+        text=child.display
         childNode=QTreeWidgetItem(item,[text])
         childNode.setToolTip(0,text)
         if len(child.children)==0:

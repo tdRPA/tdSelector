@@ -18,7 +18,12 @@ class td(ABC):
         
     @staticmethod
     @abstractmethod
-    def getText(element: tdElement,withPrefix=True) -> str:
+    def getText(element: tdElement,withPrefix=False) -> str:
+        pass
+        
+    @staticmethod
+    @abstractmethod
+    def getParent(element: tdElement) -> tdElement:
         pass
         
     @staticmethod
