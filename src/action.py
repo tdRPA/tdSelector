@@ -1,5 +1,5 @@
 from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QTreeWidgetItem,QTableWidgetItem,QMenu,QAction,QListWidgetItem
+from PySide2.QtWidgets import QTreeWidgetItem,QTableWidgetItem,QMenu,QAction,QListWidgetItem,QStyledItemDelegate,QComboBox
 from PySide2.QtGui import QCursor
 
 
@@ -20,6 +20,31 @@ def onRootLoad(rootElement):
     tree.setCurrentItem(rootNode)
     tree.expandItem(rootNode)
     
+    selector=ui.listSelector
+    selector.currentItemChanged.connect(onCurrentSelectorChanged)
+    
+    filter=ui.treeFilter
+    itemDelegate=FilterItemDelegate()
+    filter.setItemDelegateForColumn(0,itemDelegate)
+    filter.setItemDelegateForColumn(1,itemDelegate)
+    filter.setColumnWidth(0,150)
+    filter.setColumnWidth(1,80)
+    
+    
+class FilterItemDelegate(QStyledItemDelegate):
+    def createEditor(self, parent, option, index):
+        if index.column()==0:
+            return None
+        else:
+            comboBox = QComboBox(parent)
+            comboBox.addItem("Full")
+            comboBox.addItem("Regex")
+            comboBox.addItem("Regex-i")
+            comboBox.setItemData(0, '  full match case sensitive  ', Qt.ToolTipRole)
+            comboBox.setItemData(1, '  regex match case sensitive  ', Qt.ToolTipRole)
+            comboBox.setItemData(2, '  regex match case insensitive  ', Qt.ToolTipRole)
+            return comboBox
+        
     
 def onContextMenuEvent(event):
     tree=ui.treeElement    
@@ -44,11 +69,13 @@ def action__Target(checked):
         listItem=QListWidgetItem(element.filterText)
         listItem.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled|Qt.ItemIsUserCheckable)
         listItem.setCheckState(Qt.Checked)
+        listItem.setData(Qt.DisplayRole,element)
         selector.insertItem(0,listItem)
         element=element.parent
-    if selector.count()>0:
-        selector.item(0).setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled)
-        selector.item(selector.count()-1).setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled)
+    last=selector.count()-1
+    selector.item(0).setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled)
+    selector.item(last).setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled)
+    selector.setCurrentRow(last)
     
 def action__Anchor(checked):
     item=ui.treeElement.currentItem()
@@ -88,3 +115,26 @@ def onCurrentItemChanged(item, previous):
         colText.setToolTip(text)
 
         i=i+1
+        
+def onCurrentSelectorChanged(item, previous):
+    if item==None: # in case clear
+        return
+
+    element=item.data(Qt.DisplayRole)
+    
+    filter=ui.treeFilter
+    filter.clear()
+    
+    selected=QTreeWidgetItem(filter,['selected'])
+    selected.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
+    selected.setExpanded(True)
+    unSelected=QTreeWidgetItem(filter,['unselected'])
+    unSelected.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
+    unSelected.setExpanded(True)
+    
+    for key in element.filterProperties:
+        value=element.filterProperties[key]
+        text=value.text
+        
+        selectedNode=QTreeWidgetItem(selected,[key,'FullMatch',text])
+        selectedNode.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled|Qt.ItemIsEditable)

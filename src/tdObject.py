@@ -34,6 +34,7 @@ class tdElement():
         self._td=td
         
         self.properties=OrderedDict()
+        self._filterProperties=None
         td.fillProperties(self)
         
     @property
@@ -65,3 +66,15 @@ class tdElement():
             text=text[:-3]
         text+=' }'
         return text
+        
+    @property
+    def filterProperties(self):
+        if self._filterProperties==None:
+            filters=OrderedDict()
+            for key in self.properties:
+                value=self.properties[key]
+                if value.isFilter:
+                    filters[key]=value
+            self._filterProperties=filters
+        
+        return self._filterProperties
