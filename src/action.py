@@ -136,5 +136,6 @@ def onCurrentSelectorChanged(item, previous):
         value=element.filterProperties[key]
         text=value.text
         
-        selectedNode=QTreeWidgetItem(selected,[key,'FullMatch',text])
-        selectedNode.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled|Qt.ItemIsEditable)
+        selectedNode=QTreeWidgetItem(selected if value.isSelectedDefault else unSelected,[key,'FullMatch',text])
+        selectedNode.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled|Qt.ItemIsEditable|Qt.ItemIsUserCheckable)
+        selectedNode.setCheckState(0,Qt.Checked if value.isSelected else Qt.Unchecked)

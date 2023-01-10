@@ -18,14 +18,15 @@ class Rectangle():
         
         
 class tdProperty():
-    def __init__(self,value,text=None,isFilter=False,isSelected=False):
+    def __init__(self,value,text=None,isFilter=False,isSelectedDefault=False):
         self.value=value
         if text==None:
             self.text=str(value)
         else:
             self.text='%s(%s)' % (str(value),str(text))
         self.isFilter=isFilter
-        self.isSelected=isSelected
+        self.isSelectedDefault=isSelectedDefault
+        self.isSelected=isSelectedDefault
         
         
 class tdElement():

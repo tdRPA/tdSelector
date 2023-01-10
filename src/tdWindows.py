@@ -64,8 +64,8 @@ class tdWindows(td):
         properties['Text']=tdProperty(element.text, isFilter=True)
         
         acc=autoElement.GetLegacyIAccessiblePattern()        
-        properties['accRole']=tdProperty(acc.Role, isFilter=True)
-        properties['accState']=tdProperty(acc.State, isFilter=True)        
+        properties['aaRole']=tdProperty(acc.Role, isFilter=True)
+        properties['aaState']=tdProperty(acc.State, isFilter=True)        
         
         process=ps.Process(autoElement.ProcessId)
         properties['PID']=tdProperty(str(process.pid))
@@ -75,3 +75,20 @@ class tdWindows(td):
         properties['Framework']=tdProperty(autoElement.FrameworkId)
         properties['HWND']=tdProperty(hex(autoElement.NativeWindowHandle))
         properties['Bounding']=tdProperty(str(autoElement.BoundingRectangle))
+        
+        #set properties "isSelectedDefault"
+        if not (properties['Text'].value in [None,'']):
+            properties['Text'].isSelectedDefault=True
+            properties['Text'].isSelected=True
+        if not (properties['AutomationId'].value in [None,'']):
+            properties['AutomationId'].isSelectedDefault=True
+            properties['AutomationId'].isSelected=True
+        elif not (properties['aaRole'].value in [None,'']):
+            properties['aaRole'].isSelectedDefault=True
+            properties['aaRole'].isSelected=True
+        elif not (properties['ClassName'].value in [None,'']):
+            properties['ClassName'].isSelectedDefault=True
+            properties['ClassName'].isSelected=True
+        elif not (properties['ControlType'].value in [None,'']):
+            properties['ControlType'].isSelectedDefault=True
+            properties['ControlType'].isSelected=True
